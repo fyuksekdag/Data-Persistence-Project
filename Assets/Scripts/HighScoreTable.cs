@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UI;
 
 public class HighScoreTable : MonoBehaviour
 {
@@ -36,12 +37,12 @@ public class HighScoreTable : MonoBehaviour
         {
             // There's no stored table, initialize
             Debug.Log("Initializing table with default values...");
-            AddHighScoreEntry(82, "CMK");
-            AddHighScoreEntry(66, "JOE");
-            AddHighScoreEntry(54, "DAV");
-            AddHighScoreEntry(38, "CAT");
-            AddHighScoreEntry(35, "MAX");
-            AddHighScoreEntry(24, "AAA");
+            AddHighScoreEntry(30, "CMK");
+            AddHighScoreEntry(28, "JOE");
+            AddHighScoreEntry(24, "DAV");
+            AddHighScoreEntry(20, "CAT");
+            AddHighScoreEntry(14, "MAX");
+            AddHighScoreEntry(8, "AAA");
             // Reload
             jsonString = PlayerPrefs.GetString("highscoreTable");
             highscores = JsonUtility.FromJson<Highscores>(jsonString);
@@ -83,7 +84,7 @@ public class HighScoreTable : MonoBehaviour
 
     private void CreateHighscoreEntryTransform(HighScoreEntry highScoreEntry, Transform container, List<Transform> transformList)
     {
-        float templateHeight = 20f;
+        float templateHeight = 26f;
         Transform entryTransform = Instantiate(entryTemplate, container);
         RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>();
         entryRectTransform.anchoredPosition = new Vector2(0, -templateHeight * transformList.Count);
@@ -115,6 +116,31 @@ public class HighScoreTable : MonoBehaviour
 
         string name = highScoreEntry.name;
         entryTransform.Find("nameText").GetComponent<TextMeshProUGUI>().text = name;
+
+        entryTransform.Find("highlight").gameObject.SetActive(rank % 2 == 1);
+
+        // Highlight First
+        if (rank == 1)
+        {
+            entryTransform.Find("posText").GetComponent<TextMeshProUGUI>().color = Color.green;
+            entryTransform.Find("scoreText").GetComponent<TextMeshProUGUI>().color = Color.green;
+            entryTransform.Find("nameText").GetComponent<TextMeshProUGUI>().color = Color.green;
+        }
+        switch (rank)
+        {
+            default:
+                entryTransform.Find("trophy").gameObject.SetActive(false);
+                break;
+            case 1:
+                entryTransform.Find("trophy").GetComponent<Image>().color = new Color(1,0,0,1);
+                break;
+            case 2:
+                entryTransform.Find("trophy").GetComponent<Image>().color = new Color(0, 1, 0, 1);
+                break;
+            case 3:
+                entryTransform.Find("trophy").GetComponent<Image>().color = new Color(0, 0, 1, 1);
+                break;
+        }
 
         transformList.Add(entryTransform);
     }
